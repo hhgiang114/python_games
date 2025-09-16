@@ -1,6 +1,15 @@
 import pygame
 from sys import exit
 
+
+def display_score():
+    current_time = int(pygame.time.get_ticks()/1000) - start_time
+    score_surface = test_font.render('Score: ' + f'{current_time}', False, 'Black')
+    score_rect = score_surface.get_rect(center=(670, 50))
+    screen.blit(score_surface, score_rect)
+    print(current_time)
+
+
 # pygame setup
 pygame.init()
 screen = pygame.display.set_mode((800, 400))
@@ -14,14 +23,15 @@ test_font = pygame.font.Font('fonts/MedodicaRegular.otf', 50)
 # Game states
 game_active = True
 
+start_time = 0
 # Surfaces
 sky_surface = pygame.image.load('graphics/sky.png').convert()
 ground_surface = pygame.image.load('graphics/ground.png').convert()
 ghost_surface = pygame.image.load('graphics/ghost.png').convert_alpha()
 ghost_rect = ghost_surface.get_rect(bottomright=(600, 300))
 
-score_surface = test_font.render('Score:', False, 'Black')
-score_rect = score_surface.get_rect(center = (670,50))
+# score_surface = test_font.render('Score:', False, 'Black')
+# score_rect = score_surface.get_rect(center = (670,50))
 
 # text_surface = test_font.render(text info, anti alias, color )
 text_surface = test_font.render('Run for life', False, 'Black')
@@ -52,6 +62,7 @@ while True:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE :
                 game_active = True
                 ghost_rect.left = 800
+                start_time = int(pygame.time.get_ticks()/1000)
 
 
     if game_active:
@@ -59,9 +70,10 @@ while True:
         screen.blit(ground_surface, (0, 300))
         screen.blit(text_surface, (100, 25))
 
-        pygame.draw.rect(screen, 'Pink', score_rect)
-        pygame.draw.rect(screen, 'Pink', score_rect, 6)
-        screen.blit(score_surface,score_rect)
+        # pygame.draw.rect(screen, 'Pink', score_rect)
+        # pygame.draw.rect(screen, 'Pink', score_rect, 6)
+        # screen.blit(score_surface,score_rect)
+        display_score()
 
         ghost_rect.x -= 4
         if ghost_rect.right <= 0: ghost_rect.left = 800
