@@ -36,13 +36,15 @@ while True:
             exit()
 
         #mouse motion to click on the player
+        #player_rect.bottom >= 300 -> make sure the player can only jump when he's on the ground
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if player_rect.collidepoint(event.pos):
+            if player_rect.collidepoint(event.pos) and player_rect.bottom >= 300:
                 player_gravity = -20
 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
+            if event.key == pygame.K_SPACE and player_rect.bottom >= 300:
                 player_gravity = -20
+
 
 
     screen.blit(sky_surface, (0, 0))
@@ -59,9 +61,13 @@ while True:
 
     # Player
     player_gravity += 1
+    player_rect.y += player_gravity     #apply the gravity variable to move the player downwards
 
-    #apply the gravity variable to move the player downwards
-    player_rect.y += player_gravity
+    #300 is the position of the ground
+    #as long as the player exceed in the ground, set the player on the top of the ground
+    if player_rect.bottom >= 300: player_rect.bottom = 300
+
+
     screen.blit(player_surface, player_rect)
 
     # keys = pygame.key.get_pressed()
