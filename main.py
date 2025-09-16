@@ -11,6 +11,9 @@ clock = pygame.time.Clock()
 # test_font = pygame.font.Font(font type, font size)
 test_font = pygame.font.Font('fonts/MedodicaRegular.otf', 50)
 
+# Game states
+game_active = True
+
 # Surfaces
 sky_surface = pygame.image.load('graphics/sky.png').convert()
 ground_surface = pygame.image.load('graphics/ground.png').convert()
@@ -35,41 +38,49 @@ while True:
             pygame.quit()
             exit()
 
+        if game_active:
         #mouse motion to click on the player
         #player_rect.bottom >= 300 -> make sure the player can only jump when he's on the ground
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if player_rect.collidepoint(event.pos) and player_rect.bottom >= 300:
-                player_gravity = -20
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if player_rect.collidepoint(event.pos) and player_rect.bottom >= 300:
+                    player_gravity = -20
 
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE and player_rect.bottom >= 300:
-                player_gravity = -20
-
-
-
-    screen.blit(sky_surface, (0, 0))
-    screen.blit(ground_surface, (0, 300))
-    screen.blit(text_surface, (100, 25))
-
-    pygame.draw.rect(screen, 'Pink', score_rect)
-    pygame.draw.rect(screen, 'Pink', score_rect, 6)
-    screen.blit(score_surface,score_rect)
-
-    ghost_rect.x -= 4
-    if ghost_rect.right <= 0: ghost_rect.left = 800
-    screen.blit(ghost_surface, ghost_rect)
-
-    # Player
-    player_gravity += 1
-    player_rect.y += player_gravity     #apply the gravity variable to move the player downwards
-
-    #300 is the position of the ground
-    #as long as the player exceed in the ground, set the player on the top of the ground
-    if player_rect.bottom >= 300: player_rect.bottom = 300
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE and player_rect.bottom >= 300:
+                    player_gravity = -20
+        else:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE :
+                game_active = True
+                ghost_rect.left = 800
 
 
-    screen.blit(player_surface, player_rect)
+    if game_active:
+        screen.blit(sky_surface, (0, 0))
+        screen.blit(ground_surface, (0, 300))
+        screen.blit(text_surface, (100, 25))
 
+        pygame.draw.rect(screen, 'Pink', score_rect)
+        pygame.draw.rect(screen, 'Pink', score_rect, 6)
+        screen.blit(score_surface,score_rect)
+
+        ghost_rect.x -= 4
+        if ghost_rect.right <= 0: ghost_rect.left = 800
+        screen.blit(ghost_surface, ghost_rect)
+
+        # Player
+        player_gravity += 1
+        player_rect.y += player_gravity     #apply the gravity variable to move the player downwards
+
+        #300 is the position of the ground
+        #as long as the player exceed in the ground, set the player on the top of the ground
+        if player_rect.bottom >= 300: player_rect.bottom = 300
+        screen.blit(player_surface, player_rect)
+
+        #Collision
+        if ghost_rect.colliderect(player_rect):
+            game_active = False
+    else:
+        screen.fill('Yellow')
     # keys = pygame.key.get_pressed()
     # if keys[pygame.K_SPACE]:  #space button
     #     print('jump')
